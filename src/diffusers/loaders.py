@@ -45,6 +45,10 @@ class AttnProcsLayers(torch.nn.Module):
         def map_to(module, state_dict, *args, **kwargs):
             new_state_dict = {}
             for key, value in state_dict.items():
+                temp = key.split(".")[1]
+                if not temp.isdigit(): # 1 may not be an integer
+                    logger.error("'{}'.split('.')[1] not is a number".format(temp))
+                    continue
                 num = int(key.split(".")[1])  # 0 is always "layers"
                 new_key = key.replace(f"layers.{num}", module.mapping[num])
                 new_state_dict[new_key] = value
